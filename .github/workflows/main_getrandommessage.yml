@@ -11,21 +11,32 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'api' # 배포할 코드가 들어있는 폴더
+  NODE_VERSION: '20' 
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # Azure에 로그인하기 위해 필요합니다.
-      contents: read  # 코드를 체크아웃하기 위해 필요합니다.
+      id-token: write
+      contents: read
 
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
+
+      - name: 'Setup Node.js Environment'
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 'Install dependencies in api directory'
+        run: npm install
+        working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+      
       - name: 'Login to Azure'
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_513B6E380DAA4DEA8377F9CE9A8575B0 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_513B6E3E380DAA4DEA8377F9CE9A8575B0 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E25834A5CF26444998AC235AE59D0665 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7821ABD68C7F48D4A1AD722BC5290511 }}
 
@@ -35,6 +46,4 @@ jobs:
           app-name: 'GetRandomMessage'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-
-
 

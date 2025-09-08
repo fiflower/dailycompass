@@ -1,0 +1,44 @@
+name: Deploy API to Azure Function App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_FUNCTIONAPP_NAME: 'GetRandomMessage'
+  API_DIRECTORY: 'api'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.API_DIRECTORY }}/package-lock.json'
+
+      - name: 'Install dependencies in api directory'
+        run: npm install
+        working-directory: ${{ env.API_DIRECTORY }}
+
+      - name: Zip artifact for deployment
+        run: |
+          cd ${{ env.API_DIRECTORY }}
+          zip -r ../deployment.zip .
+      
+      - name: 'Deploy to Azure Functions'
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: 'deployment.zip' 
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          clean: true

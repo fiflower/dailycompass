@@ -6,16 +6,17 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch: # 수동 실행을 위한 버튼 추가
 
 # 수정하기 쉽도록 환경 변수로 앱 이름과 폴더 경로를 지정
 env:
-  AZURE_FUNCTIONAPP_NAME: 'GetRandomMessage'  # 본인의 함수 앱 이름
-  API_DIRECTORY: 'api'                        # 함수 코드가 있는 폴더 (api)
+  AZURE_FUNCTIONAPP_NAME: 'GetRandomMessage'  # ★ Azure Portal의 이름과 정확히 일치해야 함
+  API_DIRECTORY: 'api'                        # 함수 코드가 있는 폴더
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: production # 배포 환경 지정
+    environment: production
 
     steps:
       # 1. GitHub 저장소의 코드를 가져옴
@@ -33,20 +34,14 @@ jobs:
       # 3. 'api' 폴더로 이동해서 의존성 설치
       - name: npm install in api directory
         run: npm install
-        working-directory: ${{ env.API_DIRECTORY }} # ★★★ api 폴더에서만 작업
+        working-directory: ${{ env.API_DIRECTORY }}
 
-      # 4. (추가) Azure 인프라 준비를 위한 잠시 대기
-      - name: Wait for 30 seconds for Azure to be ready
-        run: sleep 30s
-        shell: bash
-
-      # 5. Azure에 배포 (함수 앱 전용 액션 사용)
+      # 4. Azure에 배포
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: ${{ env.API_DIRECTORY }} # ★★★ api 폴더만 배포
-          # ★★★ 이 부분은 절대 수정하지 마세요 ★★★
+          package: ${{ env.API_DIRECTORY }}
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-          clean: true # ★★★ 배포 전 기존 파일 모두 삭제
+          clean: true
 

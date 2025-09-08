@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: '${{ env.API_DIRECTORY }}/package-lock.json'
 
       # 3. 'api' 폴더로 이동해서 의존성 설치
-      - name: npm install in api directory
+      - name: 'Install dependencies in api directory'
         run: npm install
         working-directory: ${{ env.API_DIRECTORY }}
       
@@ -43,13 +43,13 @@ jobs:
 
       # 4. Azure에 배포
       # ★★★ 수정된 부분 ★★★
-      # working-directory를 'api'로 지정하고 package를 '.'으로 설정하여
-      # 'api' 폴더의 내용물만 압축하여 배포하도록 수정합니다.
+      # 'package' 속성에 함수 코드가 담긴 폴더 경로를 직접 지정합니다.
+      # 이 방식이 가장 표준적이며, Azure/functions-action@v1이 해당 폴더의 내용물을 올바르게 압축하여 배포합니다.
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: . # 현재 작업 디렉터리의 모든 것을 패키징
+          package: ${{ env.API_DIRECTORY }}
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
           clean: true
-        working-directory: ${{ env.API_DIRECTORY }}
+

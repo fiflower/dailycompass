@@ -4,7 +4,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     # 'permissions' 블록은 SWA 토큰 인증 시 필수는 아닙니다. 
-    # 문제가 발생하면 제거해도 됩니다.
     permissions: 
       id-token: write
       contents: read
@@ -32,3 +31,4 @@ jobs:
       # --- [삭제] 여기서부터 아래의 중복 배포 단계는 모두 삭제합니다 ---
       # - name: Build And Deploy 
       #   ... (이하 삭제) ...
+

@@ -33,7 +33,7 @@ jobs:
       # 3. 'api' 폴더로 이동해서 의존성 설치
       - name: npm install in api directory
         run: npm install
-        working-directory: ${{ env.API_DIREC<|hidden|>TORY }} # ★★★ api 폴더에서만 작업
+        working-directory: ${{ env.API_DIRECTORY }} # ★★★ api 폴더에서만 작업
 
       # 4. (추가) Azure 인프라 준비를 위한 잠시 대기
       - name: Wait for 30 seconds for Azure to be ready
@@ -49,3 +49,4 @@ jobs:
           # ★★★ 이 부분은 절대 수정하지 마세요 ★★★
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
           clean: true # ★★★ 배포 전 기존 파일 모두 삭제
+

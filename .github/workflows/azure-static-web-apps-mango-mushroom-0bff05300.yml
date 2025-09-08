@@ -1,5 +1,5 @@
 # 워크플로우 이름
-name: Deploy Azure Function App
+name: Deploy API to Azure Function App
 
 # 언제 실행할지 정의: main 브랜치에 코드가 push 될 때
 on:
@@ -7,15 +7,15 @@ on:
     branches:
       - main
 
-# 환경 변수 설정 (수정을 쉽게 하기 위해)
+# 수정하기 쉽도록 환경 변수로 앱 이름과 폴더 경로를 지정
 env:
-  AZURE_FUNCTIONAPP_NAME: 'GetRandomMessage'  # ★본인의 함수 앱 이름으로 수정★
-  API_DIRECTORY: 'api'                        # 함수 코드가 있는 폴더
+  AZURE_FUNCTIONAPP_NAME: 'GetRandomMessage'  # 본인의 함수 앱 이름
+  API_DIRECTORY: 'api'                        # 함수 코드가 있는 폴더 (api)
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: production
+    environment: production # 배포 환경 지정
 
     steps:
       # 1. GitHub 저장소의 코드를 가져옴
@@ -28,18 +28,18 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: '${{ env.api }}/package-lock.json' # 캐시 경로 지정
+          cache-dependency-path: '${{ env.API_DIRECTORY }}/package-lock.json'
 
       # 3. 'api' 폴더로 이동해서 의존성 설치
       - name: npm install in api directory
         run: npm install
-        working-directory: ${{ env.api }} # ★★★ 핵심: api 폴더에서만 작업
+        working-directory: ${{ env.API_DIRECTORY }} # ★★★ api 폴더에서만 작업
 
       # 4. Azure에 배포 (함수 앱 전용 액션 사용)
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
         with:
-          app-name: ${{ env.GetRandomMessage }}
-          package: ${{ env.api }} # ★★★ 핵심: api 폴더만 배포
-          publish-profile: ${{ secrets.<publishData><publishProfile profileName="GetRandomMessage - Web Deploy" publishMethod="MSDeploy" publishUrl="getrandommessage.scm.azurewebsites.net:443" msdeploySite="GetRandomMessage" userName="$GetRandomMessage" userPWD="pQd74cDB1tXJba6qGbxRQEjJevwv6kZ31R9G38nMfJSbmnvok6TRMLboa3AQ" destinationAppUrl="http://getrandommessage.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="https://portal.azure.com" webSystem="WebSites"><databases /></publishProfile><publishProfile profileName="GetRandomMessage - FTP" publishMethod="FTP" publishUrl="ftps://waws-prod-se1-015.ftp.azurewebsites.windows.net/site/wwwroot" ftpPassiveMode="True" userName="GetRandomMessage\$GetRandomMessage" userPWD="pQd74cDB1tXJba6qGbxRQEjJevwv6kZ31R9G38nMfJSbmnvok6TRMLboa3AQ" destinationAppUrl="http://getrandommessage.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="https://portal.azure.com" webSystem="WebSites"><databases /></publishProfile><publishProfile profileName="GetRandomMessage - Zip Deploy" publishMethod="ZipDeploy" publishUrl="getrandommessage.scm.azurewebsites.net:443" userName="$GetRandomMessage" userPWD="pQd74cDB1tXJba6qGbxRQEjJevwv6kZ31R9G38nMfJSbmnvok6TRMLboa3AQ" destinationAppUrl="http://getrandommessage.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="https://portal.azure.com" webSystem="WebSites"><databases /></publishProfile></publishData> }} # ★★★ 인증 시크릿
-          clean: true
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: ${{ env.API_DIRECTORY }} # ★★★ api 폴더만 배포
+          publish-profile: ${{ secrets.<publishData><publishProfile profileName="GetRandomMessage - Web Deploy" publishMethod="MSDeploy" publishUrl="getrandommessage.scm.azurewebsites.net:443" msdeploySite="GetRandomMessage" userName="$GetRandomMessage" userPWD="pQd74cDB1tXJba6qGbxRQEjJevwv6kZ31R9G38nMfJSbmnvok6TRMLboa3AQ" destinationAppUrl="http://getrandommessage.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="https://portal.azure.com" webSystem="WebSites"><databases /></publishProfile><publishProfile profileName="GetRandomMessage - FTP" publishMethod="FTP" publishUrl="ftps://waws-prod-se1-015.ftp.azurewebsites.windows.net/site/wwwroot" ftpPassiveMode="True" userName="GetRandomMessage\$GetRandomMessage" userPWD="pQd74cDB1tXJba6qGbxRQEjJevwv6kZ31R9G38nMfJSbmnvok6TRMLboa3AQ" destinationAppUrl="http://getrandommessage.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="https://portal.azure.com" webSystem="WebSites"><databases /></publishProfile><publishProfile profileName="GetRandomMessage - Zip Deploy" publishMethod="ZipDeploy" publishUrl="getrandommessage.scm.azurewebsites.net:443" userName="$GetRandomMessage" userPWD="pQd74cDB1tXJba6qGbxRQEjJevwv6kZ31R9G38nMfJSbmnvok6TRMLboa3AQ" destinationAppUrl="http://getrandommessage.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="https://portal.azure.com" webSystem="WebSites"><databases /></publishProfile></publishData> }}
+          clean: true # ★★★ 배포 전 기존 파일 모두 삭제

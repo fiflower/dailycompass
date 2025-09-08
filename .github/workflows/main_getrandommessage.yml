@@ -10,44 +10,34 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'api'
-  NODE_VERSION: '20' 
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'api' # 배포할 코드가 들어있는 폴더
 
 jobs:
-  build-and-deploy: # build와 deploy 작업을 하나로 통합하여 더 효율적으로 만듭니다.
+  deploy:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # Azure에 로그인하기 위해 필요합니다.
+      contents: read  # 코드를 체크아웃하기 위해 필요합니다.
 
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
 
-      - name: Setup Node ${{ env.NODE_VERSION }} Environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
+      # npm install 단계는 의도적으로 제거되었습니다.
+      # Azure의 빌드 시스템이 package.json을 보고 서버에서 자동으로 npm install을 실행합니다.
+      # 이것이 가장 안정적이고 권장되는 방식입니다.
 
-      - name: 'Resolve Project Dependencies Using Npm'
-        shell: bash
-        run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          npm install
-          popd
-          
-      - name: Login to Azure
+      - name: 'Login to Azure'
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_513B6E380DAA4DEA8377F9CE9A8575B0 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E25834A5CF26444998AC235AE59D0665 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7821ABD68C7F48D4A1AD722BC5290511 }}
 
-      - name: 'Run Azure Functions Action'
+      - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
-        id: fa
         with:
           app-name: 'GetRandomMessage'
           slot-name: 'Production'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} 
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
           clean: true

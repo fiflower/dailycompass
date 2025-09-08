@@ -1,17 +1,14 @@
-# 워크플로우 이름
 name: Deploy API to Azure Function App
 
-# 언제 실행할지 정의: main 브랜치에 코드가 push 될 때
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # 수동 실행을 위한 버튼 추가
+  workflow_dispatch:
 
-# 수정하기 쉽도록 환경 변수로 앱 이름과 폴더 경로를 지정
 env:
-  AZURE_FUNCTIONAPP_NAME: 'GetRandomMessage'  # ★ Azure Portal의 이름과 정확히 일치해야 함
-  API_DIRECTORY: 'api'                      # 함수 코드가 있는 폴더
+  AZURE_FUNCTIONAPP_NAME: 'GetRandomMessage'
+  API_DIRECTORY: 'api'
 
 jobs:
   build-and-deploy:
@@ -19,11 +16,9 @@ jobs:
     environment: production
 
     steps:
-      # 1. GitHub 저장소의 코드를 가져옴
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v3
 
-      # 2. Node.js 환경 설정
       - name: Setup Node.js version
         uses: actions/setup-node@v3
         with:
@@ -31,26 +26,19 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '${{ env.API_DIRECTORY }}/package-lock.json'
 
-      # 3. 'api' 폴더로 이동해서 의존성 설치
       - name: 'Install dependencies in api directory'
         run: npm install
         working-directory: ${{ env.API_DIRECTORY }}
 
-      # ★★★ 수정된 부분 1 ★★★
-      # 4. 배포할 ZIP 아티팩트를 수동으로 생성
-      # 'api' 폴더로 이동한 후, 그 안의 모든 내용물을 deployment.zip 파일로 압축합니다.
       - name: Zip artifact for deployment
         run: |
           cd ${{ env.API_DIRECTORY }}
           zip -r ../deployment.zip .
       
-      # ★★★ 수정된 부분 2 ★★★
-      # 5. Azure에 배포
-      # 'package' 경로를 우리가 직접 만든 deployment.zip 파일로 지정합니다.
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: 'deployment.zip' # 직접 생성한 zip 파일을 지정
+          package: 'deployment.zip' 
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
           clean: true

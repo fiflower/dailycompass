@@ -22,11 +22,6 @@ jobs:
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
-
-      # npm install 단계는 의도적으로 제거되었습니다.
-      # Azure의 빌드 시스템이 package.json을 보고 서버에서 자동으로 npm install을 실행합니다.
-      # 이것이 가장 안정적이고 권장되는 방식입니다.
-
       - name: 'Login to Azure'
         uses: azure/login@v2
         with:
@@ -40,4 +35,6 @@ jobs:
           app-name: 'GetRandomMessage'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          clean: true
+
+
+

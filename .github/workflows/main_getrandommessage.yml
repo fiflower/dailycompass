@@ -78,4 +78,5 @@ jobs:
           app-name: 'GetRandomMessage'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-	        clean: true
+		  clean: true
+

@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'api'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'api' 
   NODE_VERSION: '20' 
 
 jobs:
@@ -76,5 +76,5 @@ jobs:
         with:
           app-name: 'GetRandomMessage'
           slot-name: 'Production'
-          package: '.'
+          package: '.' 
           clean: true

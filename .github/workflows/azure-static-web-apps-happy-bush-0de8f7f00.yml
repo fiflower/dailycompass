@@ -1,20 +1,11 @@
-name: Azure Static Web Apps CI/CD
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
-
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
-    permissions: # OIDC를 사용하지 않는 경우 이 permissions 블록이 필요 없을 수 있습니다.
+    # 'permissions' 블록은 SWA 토큰 인증 시 필수는 아닙니다. 
+    # 문제가 발생하면 제거해도 됩니다.
+    permissions: 
       id-token: write
       contents: read
     steps:
@@ -23,8 +14,7 @@ jobs:
           submodules: true
           lfs: false
 
-      # --- [추가] Azure Static Web Apps 빌드 및 배포 단계 ---
-      # 이 단계에서 이전에 논의한 app_location, api_location 등을 설정합니다.
+      # --- [유지] 이 단계만 남겨둡니다 ---
       - name: Build and Deploy to Azure Static Web Apps
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -34,47 +24,11 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }} # PULL 요청 처리를 위해 필요
           action: "upload"
 
-          # --- 프로젝트 구조 설정 ---
-          app_location: "frontend" # React 앱 폴더 (package.json 위치)
+          # --- 올바른 프로젝트 구조 설정 ---
+          app_location: "frontend" # React 앱 폴더
           api_location: "api"      # API 폴더
           output_location: "build"   # React 빌드 결과물 폴더
 
-      # --- [제거 권장] 아래 단계들은 표준 SSWA 배포에 필요하지 않습니다 ---
-      # - name: Install OIDC Client from Core Package
-      #   run: npm install @actions/core@1.6.0 @actions/http-client
-      # - name: Get Id Token
-      #   uses: actions/github-script@v6
-      #   id: idtoken
-      #   with:
-      #     script: |
-      #       const coredemo = require('@actions/core')
-      #       return await coredemo.getIDToken()
-           result-encoding: string
-      - name: Build And Deploy
-        id: builddeploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "api" # App source code path
-          api_location: "api" # Api source code path - optional
-          output_location: "build" # Built app content directory - optional
-          github_id_token: ${{ steps.idtoken.outputs.result }}
-          ###### End of Repository/Build Configurations ######
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          action: "close"
-
-
-
+      # --- [삭제] 여기서부터 아래의 중복 배포 단계는 모두 삭제합니다 ---
+      # - name: Build And Deploy 
+      #   ... (이하 삭제) ...

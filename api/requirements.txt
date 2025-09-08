@@ -1,0 +1,9 @@
+#Azure Functions Core
+azure-functions
+
+#Web Crawling
+requests
+beautifulsoup4
+
+#Timezone
+python-dateutil

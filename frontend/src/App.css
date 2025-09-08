@@ -1,0 +1,536 @@
+/* --- 기본 & 공통 스타일 --- */
+:root {
+  --primary-color: #5D5FEF;
+  --primary-light: #eef2ff;
+  --secondary-color: #10B981;
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --border-color: #e5e7eb;
+  --background-color: #f0f2f5;
+  --white: #ffffff;
+  --danger-color: #ef4444;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-dark);
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* --- 로그인 / 회원가입 페이지 --- */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+.auth-container {
+  width: 100%;
+  max-width: 400px;
+  background: var(--white);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+.auth-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+.auth-header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+.logo-box {
+  width: 60px;
+  height: 60px;
+  background-image: url('favicon.png'); /* 로고 이미지 경로 */
+  background-size: contain; /* 박스 크기에 맞게 이미지 크기 조절 */
+  background-repeat: no-repeat; /* 이미지 반복 방지 */
+  background-position: center; /* 이미지를 중앙에 배치 */
+  border-radius: 8px; /* 필요하다면 유지 */
+  display: flex; /* flexbox는 더 이상 이미지 배치에 필요하지 않을 수 있지만, 다른 용도로 사용될 경우 유지 */
+  align-items: center; /* 이미지 대신 다른 콘텐츠가 들어갈 경우를 위해 유지 가능 */
+  justify-content: center; /* 이미지 대신 다른 콘텐츠가 들어갈 경우를 위해 유지 가능 */
+}
+.auth-form input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+.auth-form button {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.auth-form button:hover {
+  background-color: #4345d1;
+}
+.switch-text {
+  margin-top: 20px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+.switch-text span {
+  color: var(--primary-color);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* --- 메인 페이지 --- */
+.main-page-container {
+  max-width: 1400px; /* 너비를 조금 더 넓게 */
+  margin: 0 auto;
+  padding: 20px;
+}
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  padding: 15px 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+.main-header .logo-area {
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  gap: 15px;
+}
+.main-header .logo-area h1 { margin: 0; font-size: 1.5rem; }
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.logout-btn {
+  background: #e9ecef;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+.logout-btn:hover { background-color: #ced4da; }
+
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: auto auto;
+  gap: 20px;
+  grid-template-areas:
+    "postbox diary"
+    "news news";
+}
+.postbox-section { grid-area: postbox; }
+.diary-section { grid-area: diary; }
+.news-section { grid-area: news; }
+
+/* --- 마음 우체통 --- */
+.mind-postbox-container {
+  background: var(--white);
+  padding: 25px 60px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  text-align: center;
+  min-height: 550px;
+}
+.postbox-title { margin-top: 0; }
+.postbox-subtitle { color: #6c757d; margin-bottom: 25px; }
+.mood-section { margin-bottom: 20px; }
+.text-section {
+  margin-bottom: 20px;
+  flex-grow: 1; /* 이 속성이 핵심! 남는 공간을 모두 차지함 */
+  display: flex; /* 자식인 textarea가 높이를 100% 채울 수 있도록 flex로 만듦 */
+}
+.mood-label { display: block; margin-bottom: 15px; font-weight: 600; }
+.mood-buttons { display: flex; gap: 10px; justify-content: center; }
+.mood-btn {
+  padding: 10px 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 50px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.mood-btn.selected { transform: scale(1.05); }
+.mood-btn.good.selected { background: #48bb78; color: white; border-color: #48bb78; }
+.mood-btn.bad.selected { background: #ed8936; color: white; border-color: #ed8936; }
+.text-input {
+  width: 100%; box-sizing: border-box; min-height: 100px; padding: 15px;
+  border: 1px solid #dee2e6; border-radius: 8px; font-size: 1rem; resize: vertical;
+}
+.submit-btn {
+  background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; padding: 12px 30px;
+  border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+  display: inline-flex; align-items: center;
+}
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.result-section { 
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 상단(메시지)과 하단(버튼)을 양 끝으로 밀어냄 */
+  flex-grow: 1; /* 이 속성을 추가하여 결과창이 남는 공간을 모두 차지하게 함 */ 
+  }
+.message-card { background: #f8f9fa; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+.message-content { font-size: 1.1rem; line-height: 1.6; }
+.message-author { margin-top: 15px; color: #868e96; font-style: italic; font-size: 0.9rem; }
+.action-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;}
+.action-btn {
+  padding: 8px 18px; border: 2px solid #667eea; border-radius: 25px; background: white;
+  color: #667eea; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+}
+.action-btn.save-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px; /* 아이콘과 텍스트 사이 간격 */
+}
+.action-btn.save-btn.saved {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  border-color: var(--secondary-color);
+  cursor: default; /* 저장 후에는 클릭할 수 없도록 커서 변경 */
+}
+.action-btn.save-btn.saved:hover {
+  background-color: var(--secondary-color); /* 호버 효과도 동일하게 유지 */
+  color: var(--white);
+}
+.action-btn:hover { background: #667eea; color: white; }
+
+/* --- 마음 우체통: 결과 섹션 & 음성 버튼 --- */
+
+/* 메시지 카드와 음성 버튼을 나란히 배치하기 위한 래퍼(wrapper) */
+.message-card-wrapper {
+  display: flex;
+  flex-direction: column; /* 세로 방향 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 12px;           /* 카드와 버튼 사이 간격 */
+  margin-bottom: 15px; /* 아래 다른 버튼들과의 간격 */
+}
+
+/* 기존 메시지 카드가 공간을 모두 차지하도록 설정 */
+.message-card {
+  flex-grow: 1; /* 남는 공간을 모두 차지 */
+  margin-bottom: 0; /* 래퍼에서 간격을 제어하므로 초기화 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+/* 음성 재생 버튼 스타일 */
+.speak-btn {
+  flex-shrink: 0; /* 버튼 크기가 줄어들지 않도록 설정 */
+  width: 44px;
+  height: 44px;
+  border-radius: 50%; /* 원형 버튼 */
+  border: 1px solid var(--border-color);
+  background-color: var(--white);
+  color: var(--text-light);
+  cursor: pointer;
+  
+  /* 아이콘을 버튼 중앙에 위치시키기 위함 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.2s ease-in-out;
+}
+
+/* 마우스를 올렸을 때 스타일 */
+.speak-btn:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* 비활성화 상태일 때 스타일 (음성 로딩 중) */
+.speak-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f8f9fa;
+}
+
+/* 음성 로딩 중 표시될 작은 스피너 */
+.loading-small {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary-color); /* 로딩 색상 */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* 기존 submit-btn의 아이콘 정렬을 위해 수정 (선택 사항) */
+.submit-btn {
+    justify-content: center; /* 아이콘과 텍스트를 중앙 정렬 */
+}
+
+/* --- 실시간 뉴스 --- */
+.news-section {
+    background: white; padding: 25px; border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+.news-section h2 { margin-top: 0; }
+.news-content {
+  background: #f7f8fa; border-radius: 16px; padding: 14px;
+  height: 300px; display: flex; flex-direction: column; overflow: hidden;
+}
+.news-list {
+  flex: 1; overflow-y: auto; margin: 0; padding: 0 4px; list-style: none;
+}
+.news-item a { text-decoration: none; }
+.news-item {
+  padding: 8px 2px 10px; border-bottom: 1px solid #eceff4;
+}
+.news-title {
+  display: inline-block; font-weight: 600; text-decoration: none; color: #1f2937;
+}
+.news-title:hover { text-decoration: underline; }
+.news-press { font-size: 12px; color: var(--text-light); }
+
+/* ▼▼▼ 여기가 핵심 수정 부분입니다! ▼▼▼ */
+
+/* --- 다이어리 섹션 (Todo & Calendar) --- */
+.diary-section {
+  background: var(--white);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+.diary-section h2 {
+  margin-top: 0;
+  margin-bottom: 20px; /* 제목과 컨텐츠 사이 여백 */
+}
+
+/* Todo와 Calendar를 감싸는 새로운 그리드 컨테이너 */
+.diary-layout-container {
+  display: grid;
+  /* Todo 리스트를 1, 캘린더를 1.2 비율로 설정 */
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* 기존 컨테이너 스타일 리셋 (중복 방지) */
+.calendar-container, .todo-list-container {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* 기존 캘린더 & 투두리스트 스타일 (위치, 크기 조정) */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px; /* 여백 조정 */
+}
+.calendar-header h2 {
+  font-size: 1.1rem; /* 폰트 크기 조정 */
+  font-weight: 700;
+  white-space: nowrap;
+  margin: 0 8px;
+}
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+.day-name {
+  text-align: center;
+  font-size: 0.8rem; /* 폰트 크기 조정 */
+  color: var(--text-light);
+  font-weight: 500;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px; /* 간격 조정 */
+}
+.day-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
+  height: auto;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+.day-cell.not-current-month { color: #ccc; }
+.day-cell:hover:not(.selected) { background-color: var(--primary-light); }
+.day-cell.today span { color: var(--primary-color); font-weight: 700; }
+.day-cell.selected { background-color: var(--primary-color); color: var(--white); }
+.day-cell.selected span { color: var(--white); }
+.todo-dot {
+  position: absolute;
+  bottom: 5px; /* 위치 조정 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
+}
+.day-cell.selected .todo-dot { background-color: var(--white); }
+
+.todo-header {
+  font-size: 1.1rem; /* 폰트 크기 조정 */
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+.todo-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.todo-input {
+  flex-grow: 1; border: 1px solid var(--border-color); border-radius: 8px;
+  padding: 10px 14px; font-size: 0.9rem;
+}
+.todo-input:focus {
+  outline: none; border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(93, 95, 239, 0.2);
+}
+.add-btn {
+  flex-shrink: 0; width: 40px; height: 40px;
+  border-radius: 8px; border: none; background-color: var(--primary-color);
+  color: var(--white); cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+}
+.todo-list {
+  list-style: none;
+  max-height: 350px; /* 높이 조정 */
+  overflow-y: auto;
+  padding: 0;
+}
+.todo-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 4px; border-bottom: 1px solid var(--border-color);
+}
+.todo-item:last-child { border-bottom: none; }
+.todo-content {
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; flex-grow: 1; overflow: hidden;
+}
+.custom-checkbox {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border-color); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s; font-size: 10px; color: var(--white);
+}
+.todo-item.completed .custom-checkbox {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+.todo-text {
+  color: var(--text-dark); transition: all 0.2s; word-break: break-all;
+  font-size: 0.95rem;
+}
+.todo-item.completed .todo-text {
+  color: var(--text-light); text-decoration: line-through;
+}
+.delete-btn {
+  background: none; border: none; color: var(--text-light); cursor: pointer;
+  padding: 5px; border-radius: 50%; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.delete-btn:hover { background-color: #fee2e2; color: var(--danger-color); }
+.no-todos {
+  text-align: center; padding: 40px 20px; color: var(--text-light);
+}
+.no-todos p { line-height: 1.6; }
+
+/* --- 공통 에러 메시지 --- */
+.feedback-message {
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+.feedback-message.error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.feedback-message.success {
+  background: #d1fae5;
+  color: #065f46;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.loading {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- 반응형 디자인 --- */
+@media (max-width: 1200px) {
+  .main-content {
+    grid-template-columns: 1fr; /* 한 줄로 변경 */
+    grid-template-areas:
+      "postbox"
+      "diary"
+      "news";
+  }
+}
+
+
+
+.load-more-btn {
+  background-color: #7c3aed; /* 보라색 배경 */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.load-more-btn:hover {
+  background-color: #6d28d9; /* 마우스 오버 시 더 어두운 보라색 */
+}
+

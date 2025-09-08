@@ -1,0 +1,28 @@
+# Node
+node_modules/
+frontend/node_modules/
+api/node_modules/
+npm-debug.log*
+
+# Build outputs
+build/
+dist/
+frontend/build/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Env/Secrets
+.env
+frontend/.env*
+api/.env*
+local.settings.json
+
+# IDE/OS
+.vscode/
+.DS_Store
+Thumbs.db

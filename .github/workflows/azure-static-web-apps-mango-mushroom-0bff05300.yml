@@ -35,21 +35,22 @@ jobs:
       - name: 'Install dependencies in api directory'
         run: npm install
         working-directory: ${{ env.API_DIRECTORY }}
-      
-      # (선택사항) 빌드 스텝이 필요한 경우 여기에 추가
-      # - name: Build project
-      #   run: npm run build --if-present
-      #   working-directory: ${{ env.API_DIRECTORY }}
 
-      # 4. Azure에 배포
-      # ★★★ 수정된 부분 ★★★
-      # 'package' 속성에 함수 코드가 담긴 폴더 경로를 직접 지정합니다.
-      # 이 방식이 가장 표준적이며, Azure/functions-action@v1이 해당 폴더의 내용물을 올바르게 압축하여 배포합니다.
+      # ★★★ 수정된 부분 1 ★★★
+      # 4. 배포할 ZIP 아티팩트를 수동으로 생성
+      # 'api' 폴더로 이동한 후, 그 안의 모든 내용물을 deployment.zip 파일로 압축합니다.
+      - name: Zip artifact for deployment
+        run: |
+          cd ${{ env.API_DIRECTORY }}
+          zip -r ../deployment.zip .
+      
+      # ★★★ 수정된 부분 2 ★★★
+      # 5. Azure에 배포
+      # 'package' 경로를 우리가 직접 만든 deployment.zip 파일로 지정합니다.
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: ${{ env.API_DIRECTORY }}
+          package: 'deployment.zip' # 직접 생성한 zip 파일을 지정
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
           clean: true
-

@@ -43,7 +43,7 @@ function TodoCalendar({ user }) {
                 setIsLoading(true);
                 setError(null);
                 try {
-                    const response = await fetch('/https://eldailycompass-apim.azure-api.net/eldailycompass/todos', {
+                    const response = await fetch('/eldailycompass/todos', {
                         headers: getDevHeaders(user)
                     });
                     if (!response.ok) {
@@ -85,7 +85,7 @@ function TodoCalendar({ user }) {
         const newTodoData = { text, date: dateKey };
 
         try {
-            const response = await fetch('/https://eldailycompass-apim.azure-api.net/eldailycompass/todos', {
+            const response = await fetch('/eldailycompass/todos', {
                 method: 'POST',
                 headers: getDevHeaders(user),
                 body: JSON.stringify(newTodoData),
@@ -105,7 +105,7 @@ function TodoCalendar({ user }) {
         const newCompleted = !currentCompleted;
 
         try {
-            const response = await fetch(`/https://eldailycompass-apim.azure-api.net/eldailycompass/todos/${todoId}`, {
+            const response = await fetch(`/eldailycompass/todos/${todoId}`, {
                 method: 'PUT',
                 headers: getDevHeaders(user),
                 body: JSON.stringify({ completed: newCompleted })
@@ -124,7 +124,7 @@ function TodoCalendar({ user }) {
         const dateKey = formatDateKey(selectedDate);
 
         try {
-            const response = await fetch(`/https://eldailycompass-apim.azure-api.net/eldailycompass/todos/${todoId}`, {
+            const response = await fetch(`/eldailycompass/todos/${todoId}`, {
                 method: 'DELETE',
                 headers: getDevHeaders(user)
             });

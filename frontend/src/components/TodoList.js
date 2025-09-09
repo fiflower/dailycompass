@@ -21,8 +21,8 @@ const groupTodosByDate = (flatTodos) => {
 
 const getDevHeaders = (user) => {
     const headers = { 'Content-Type': 'application/json' };
-    if (window.location.hostname === 'localhost' && user?.nickname) {
-        // [수정] 한글 등 다국어 닉네임을 안전하게 전송하기 위해 인코딩합니다.
+    // 로컬/배포 환경 구분 없이 user.nickname을 헤더에 추가합니다.
+    if (user?.nickname) {
         headers['x-dev-user-id'] = encodeURIComponent(user.nickname);
     }
     return headers;

@@ -36,26 +36,23 @@ function getUserInfo(req, context) {
 module.exports = async function (context, req) {
     context.log('Todo API function processed a request.');
 
-    // ⭐️ 중요: getUserInfo 함수를 통해 사용자 ID를 가져옵니다.
-    // 이 방식은 Static Web Apps의 내장 인증 기능을 사용합니다.
-    let userId = getUserInfo(req, context);
+    let userId = null;
+    const devUserIdHeader = req.headers['x-dev-user-id'];
 
-    // 로컬 개발 환경에서 x-dev-user-id 헤더를 사용하는 로직은 그대로 둡니다.
-    if (!userId && req.headers['host']?.startsWith('localhost')) {
-        context.log("--- LOCAL DEV MODE ---");
-        const devUserIdHeader = req.headers['x-dev-user-id'];
-        if (devUserIdHeader) {
-            try {
-                userId = decodeURIComponent(devUserIdHeader);
-                context.log(`Using user ID from 'x-dev-user-id' header: '${userId}'`);
-            } catch (e) {
-                context.log.error("Failed to decode 'x-dev-user-id' header.", e);
-                userId = "long";
-            }
-        } else {
-            userId = "long";
-            context.log("No 'x-dev-user-id' header found. Falling back to default test user 'long'.");
+    if (devUserIdHeader) {
+        try {
+            // 프런트엔드에서 보내준 닉네임을 디코딩합니다.
+            userId = decodeURIComponent(devUserIdHeader);
+            context.log(`Using user ID from 'x-dev-user-id' header: '${userId}'`);
+        } catch (e) {
+            context.log.error("Failed to decode 'x-dev-user-id' header.", e);
+            context.res = { status: 400, body: "Invalid user ID header." };
+            return;
         }
+    } else {
+        // 헤더가 없으면 인증 실패
+        context.res = { status: 401, body: "Unauthorized: User not authenticated." };
+        return;
     }
 
     // 사용자 ID가 없으면 401 Unauthorized 오류를 반환합니다.

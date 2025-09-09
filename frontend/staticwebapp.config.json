@@ -1,0 +1,18 @@
+{
+  "routes": [
+    {
+      "route": "/eldailycompass/*",
+      "rewrite": "https://eldailycompass-apim.azure-api.net/eldailycompass/*",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ]
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html"
+  }
+}

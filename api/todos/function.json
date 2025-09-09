@@ -9,7 +9,8 @@
         "get",
         "post",
         "put",
-        "delete"
+        "delete",
+        "options"
       ],
       "route": "todos/{*id}"
     },

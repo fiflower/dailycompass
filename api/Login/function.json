@@ -8,7 +8,8 @@
       "methods": [
         "post",
         "options"
-      ]
+      ],
+      "route": "eldailycompass/Login" 
     },
     {
       "type": "http",

@@ -10,7 +10,7 @@
         "get",
         "options"
       ],
-      "route": "news/{*date}"
+      "route": "eldailycompass/news/{*date}"
     },
     {
       "type": "http",

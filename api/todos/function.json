@@ -12,7 +12,7 @@
         "delete",
         "options"
       ],
-      "route": "todos/{*id}"
+      "route": "eldailycompass/todos/{*id}"
     },
     {
       "type": "http",

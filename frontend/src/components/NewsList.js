@@ -16,8 +16,8 @@ export default function NewsList({ date }) {
     setVisibleCount(4); // 날짜가 변경될 때마다 표시 개수 초기화
 
     const url = date
-      ? `${API_BASE}/api/news?date=${encodeURIComponent(date)}`
-      : `${API_BASE}/api/news`;
+      ? `${API_BASE}/https://eldailycompass-apim.azure-api.net/eldailycompass/news?date=${encodeURIComponent(date)}`
+      : `${API_BASE}/https://eldailycompass-apim.azure-api.net/eldailycompass/news`;
 
     fetch(url)
       .then(async (res) => {

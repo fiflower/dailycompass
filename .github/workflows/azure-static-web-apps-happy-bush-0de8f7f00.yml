@@ -1,36 +1,45 @@
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [ main ]
+
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
-    # 'permissions' 블록은 SWA 토큰 인증 시 필수는 아닙니다. 
     permissions: 
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
-
-      # --- [유지] 이 단계만 남겨둡니다 ---
+      
       - name: Build and Deploy to Azure Static Web Apps
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          # Azure SWA 리소스에서 발급받은 배포 토큰 시크릿 이름
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # PULL 요청 처리를 위해 필요
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
+          app_location: "frontend"
+          api_location: "api"
+          output_location: "build"
 
-          # --- 올바른 프로젝트 구조 설정 ---
-          app_location: "frontend" # React 앱 폴더
-          api_location: "api"      # API 폴더
-          output_location: "build"   # React 빌드 결과물 폴더
-
-      # --- [삭제] 여기서부터 아래의 중복 배포 단계는 모두 삭제합니다 ---
-      # - name: Build And Deploy 
-      #   ... (이하 삭제) ...
-
-
-
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: "close"

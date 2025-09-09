@@ -1,19 +1,19 @@
-// frontend/src/components/NewsList.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
-const API_BASE = process.env.REACT_APP_API_BASE || ""; // 프록시 사용 시 빈 문자열
+// 백엔드 API 서버의 전체 주소를 명시적으로 지정합니다.
+const API_BASE = "http://localhost:7071";
 
 export default function NewsList({ date }) {
   const [items, setItems] = useState([]);
   const [pending, setPending] = useState(true);
   const [error, setError] = useState("");
-  const [code, setCode] = useState(""); // ← 크롤러 소스 저장
+  const [visibleCount, setVisibleCount] = useState(4); // 처음 4개만 표시
 
   useEffect(() => {
     let alive = true;
     setPending(true);
     setError("");
-    setCode("");
+    setVisibleCount(4); // 날짜가 변경될 때마다 표시 개수 초기화
 
     const url = date
       ? `${API_BASE}/api/news?date=${encodeURIComponent(date)}`
@@ -31,55 +31,83 @@ export default function NewsList({ date }) {
           err.status = res.status;
           throw err;
         }
-        const list = Array.isArray(data) ? data : (data.items || []);
+        const list = Array.isArray(data.items) ? data.items : [];
         if (alive) setItems(list);
       })
-      .catch(async (err) => {
+      .catch((err) => {
         if (!alive) return;
         setError(err.message || "뉴스 로딩 실패");
-        // 에러가 나면 크롤러 소스코드를 불러와서 보여줌
-        try {
-          const r = await fetch(`${API_BASE}/api/debug/crawler`);
-          const t = await r.text();
-          if (alive) setCode(t);
-        } catch (_) {}
       })
       .finally(() => alive && setPending(false));
 
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, [date]);
 
-  if (pending) return <div className="news-loading">불러오는 중…</div>;
-
-  if (error) {
-    return (
-      <div className="news-error">
-        <div style={{ marginBottom: 8 }}>오류: {error}</div>
-        {code && (
-          <details open>
-            <summary>crawl_naver_news.py</summary>
-            <pre className="code-block">{code}</pre>
-          </details>
-        )}
-      </div>
-    );
-  }
-
-  if (!items.length) return <div className="news-empty">표시할 뉴스가 없습니다.</div>;
+  // 화면에 보여줄 항목들
+  const visibleItems = useMemo(
+    () => items.slice(0, visibleCount),
+    [items, visibleCount]
+  );
+  const canLoadMore = visibleCount < items.length;
 
   return (
-    <ul className="news-list">
-      {items.map((n) => (
-        <li key={n.aid || n.link} className="news-item">
-          <a className="news-title" href={n.link} target="_blank" rel="noreferrer">
-            {n.title}
-          </a>
-          <div className="news-meta">
-            <span className="news-press">{n.press || "언론사 미상"}</span>
-            {n.time && <span className="news-time"> · {n.time}</span>}
+    <section className="news-section">
+      <div className="news-header">
+        <h2>실시간 뉴스</h2>
+      </div>
+
+      <div className="news-content">
+        {pending && <div className="news-loading">불러오는 중…</div>}
+
+        {!pending && error && (
+          <div className="news-error">
+            <div style={{ marginBottom: 8 }}>오류: {error}</div>
           </div>
-        </li>
-      ))}
-    </ul>
+        )}
+
+        {!pending && !error && (
+          <>
+            {visibleItems.length === 0 ? (
+              <div className="news-empty">표시할 뉴스가 없습니다.</div>
+            ) : (
+              <ul className="news-list">
+                {visibleItems.map((n) => (
+                  <li key={n.aid || n.link} className="news-item">
+                    <a
+                      className="news-title"
+                      href={n.link}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {n.title}
+                    </a>
+                    <div className="news-meta">
+                      <span className="news-press">
+                        {n.press || "언론사 미상"}
+                      </span>
+                      {n.time && <span className="news-time"> · {n.time}</span>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+        )}
+      </div>
+
+      {canLoadMore && !pending && !error && (
+        <button
+          className="load-more-btn"
+          onClick={() =>
+            setVisibleCount((c) => Math.min(c + 6, items.length))
+          }
+        >
+          더보기
+        </button>
+      )}
+    </section>
   );
 }
+

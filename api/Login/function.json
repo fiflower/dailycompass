@@ -6,10 +6,8 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "post",
-        "options"
-      ],
-      "route": "eldailycompass/Login" 
+        "post"
+      ]
     },
     {
       "type": "http",

@@ -9,10 +9,9 @@
         "get",
         "post",
         "put",
-        "delete",
-        "options"
+        "delete"
       ],
-      "route": "eldailycompass/todos/{*id}"
+      "route": "todos/{*id}"
     },
     {
       "type": "http",

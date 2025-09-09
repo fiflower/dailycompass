@@ -71,7 +71,7 @@ const MindPostbox = () => {
         }
 
         try {
-            const functionUrl = `/eldailycompass/GetRandomMessage?mood=${selectedMood}`;
+            const functionUrl = `/api/GetRandomMessage?mood=${selectedMood}`;
             const response = await fetch(functionUrl);
             const data = await response.json();
 

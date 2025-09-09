@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 // 백엔드 API 서버의 전체 주소를 명시적으로 지정합니다.
-const API_BASE = "/eldailycompass/news";
+const API_BASE = "/api/news";
 
 export default function NewsList({ date }) {
   const [items, setItems] = useState([]);

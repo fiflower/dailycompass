@@ -7,10 +7,9 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get",
-        "options"
+        "get"
       ],
-      "route": "eldailycompass/news/{*date}"
+      "route": "news/{*date}"
     },
     {
       "type": "http",

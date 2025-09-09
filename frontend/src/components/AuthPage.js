@@ -19,7 +19,7 @@ const AuthPage = ({ onLogin }) => {
 
         setIsLoading(true);
         try {
-            const response = await fetch('/eldailycompass/Signup', {
+            const response = await fetch('/api/Signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nickname, id, password })
@@ -42,7 +42,7 @@ const AuthPage = ({ onLogin }) => {
         setError('');
         setIsLoading(true);
         try {
-            const response = await fetch('/eldailycompass/Login', {
+            const response = await fetch('/api/Login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, password })

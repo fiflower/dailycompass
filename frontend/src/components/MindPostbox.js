@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // --- 아이콘 SVG 컴포넌트 ---
-const SoundIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> );
+const SoundIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> );
 const StopIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="6" width="12" height="12"></rect></svg> );
+
 // ✨ [추가] '메시지 보관' 버튼에 사용할 북마크 아이콘입니다.
 const BookmarkIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path></svg> );
 
@@ -90,28 +91,57 @@ const MindPostbox = () => {
     };
 
     const handleSpeak = async () => {
-        if (isSpeaking) {
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
-            }
-            setIsSpeaking(false);
-            return;
+    if (isSpeaking) {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
+        setIsSpeaking(false);
+        return;
+    }
+
+    if (!message) return;
+    
+    setIsFetchingAudio(true);
+    setFeedback({ message: null, type: 'error' });
+
+    try {
+        // ⭐ 수정: fetch API를 사용합니다.
+        const response = await fetch('/api/TextToSpeech', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: message, mood: selectedMood }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "음성 변환 중 오류가 발생했습니다.");
         }
 
-        if (!message) return;
+        // ⭐ 수정: 응답을 blob()으로 변환합니다.
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        // Audio 객체 생성 및 재생
+        if (audioRef.current) {
+            audioRef.current.pause();
+            URL.revokeObjectURL(audioRef.current.src);
+        }
         
-        setIsFetchingAudio(true);
-        setFeedback({ message: null, type: 'error' });
+        audioRef.current = new Audio(audioUrl);
+        audioRef.current.play();
+        setIsSpeaking(true);
 
-        try {
-            // ... (기존 음성 재생 로직은 그대로입니다)
-        } catch (err) {
-            showFeedback(err.message);
-        } finally {
-            setIsFetchingAudio(false);
-        }
-    };
+        audioRef.current.onended = () => {
+            setIsSpeaking(false);
+        };
+    } catch (err) {
+        showFeedback(err.message);
+        console.error("Audio playback error:", err);
+    } finally {
+        setIsFetchingAudio(false);
+    }
+};
     
     // ✨ [추가] '메시지 보관' 버튼을 클릭했을 때 실행되는 핵심 함수입니다.
     const handleSaveMessage = () => {
